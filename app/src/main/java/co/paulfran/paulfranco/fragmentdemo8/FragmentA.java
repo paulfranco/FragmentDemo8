@@ -29,6 +29,13 @@ public class FragmentA extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        score = 0;
+
+        // save
+        if (savedInstanceState != null) {
+            // second parameter 0 is to avoid any null pointer exception just in case score_key does not have a value for some reason
+            score = savedInstanceState.getInt("score_key", 0);
+        }
         Toast.makeText(getActivity(), "Score value: " + score, Toast.LENGTH_SHORT).show();
     }
 
@@ -41,9 +48,21 @@ public class FragmentA extends Fragment {
         button = (Button) view.findViewById(R.id.button);
         textView = (TextView) view.findViewById(R.id.textView);
 
+        if (savedInstanceState != null) {
+            button.setText(savedInstanceState.getString("btn_key", "LOG IN"));
+            textView.setText(savedInstanceState.getString("txv_key"));
+        }
+
         button.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
+
+                textView.setText("Dummy Text");
+                button.setText("Log Out");
+
+                score = 50;
+
+                Toast.makeText(getActivity(), "Score value: " + score, Toast.LENGTH_SHORT).show();
 
             }
         });
@@ -73,6 +92,16 @@ public class FragmentA extends Fragment {
     public void onPause() {
         super.onPause();
         Log.i(TAG, "onPause()");
+    }
+
+    // This method is called after onPause()
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putInt("score_key", score);
+        outState.putString("txv_key", textView.getText().toString());
+        outState.putString("btn_key", button.getText().toString());
     }
 
     @Override
